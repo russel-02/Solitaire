@@ -8,7 +8,8 @@ import java.util.*;
 
 public class SolitaireGame {
     private int stockCycles = 0;
-    private int stockCyclesLimit = 10;
+    private int stockCyclesLimit = 100;
+    private int drawnCards = 1;
     private StockPile stock;
     private WastePile waste;
     private List<FoundationPile> foundations;
@@ -23,18 +24,32 @@ public class SolitaireGame {
     private Set<String> visitedMoves = new HashSet<>();
     private final Dealer dealer;
 
-    public SolitaireGame(List<Card> deck, int shuffleCount) {
+    public SolitaireGame(List<Card> deck, int shuffleCount, int shuffleType) {
         dealer = new Dealer();
 
-        System.out.println("Before shuffle:");
+        System.out.println("\nBefore shuffle:");
         dealer.displayDeck(deck);
-
-        for (int i = 0; i < shuffleCount; i++) {
-            dealer.shuffleDeck(deck);
+        System.out.println();
+        
+        switch(shuffleType) {
+        case 1:
+        	for (int i = 0; i < shuffleCount; i++) {
+  	    	  Collections.shuffle(deck);
+        	}
+        	System.out.println("Shuffle used: Random Shuffling");
+          break;
+        case 2:
+        	shuffleCount %= 8;
+            for (int i = 0; i < shuffleCount; i++) {
+                dealer.shuffleDeck(deck);
+            }
+            System.out.println("Shuffle used: Faro Shuffling");
+        break;  
         }
 
         System.out.println("After shuffle:");
         dealer.displayDeck(deck);
+        System.out.println();
         
         for (Card card : deck) {
         	card.setFaceUp(false); 
@@ -69,8 +84,6 @@ public class SolitaireGame {
 
         do {
             moved = false;
-
-            // win check
             if (isGameWon()) {
                 System.out.println("\n=== 🎉 YOU WON! All 52 cards are in the foundations. ===");
                 printGameState();
@@ -212,7 +225,7 @@ public class SolitaireGame {
 
     private boolean tryStockOrRecycle() {
         if (!stock.isEmpty()) {
-            List<Card> drawn = stock.drawCards(3);
+            List<Card> drawn = stock.drawCards(drawnCards);
             for (Card c : drawn) c.setFaceUp(true);
             waste.addCards(drawn);
             System.out.println("Drew " + drawn.size() + " cards from Stock → Waste");
@@ -228,7 +241,6 @@ public class SolitaireGame {
             // 🚨 detect infinite loop
             if (stockCycles > stockCyclesLimit) {
                 System.out.println("\n=== GAME OVER (stock/waste loop detected) ===");
-                printGameState();
                 System.exit(0);  // hard stop game
             }
 
@@ -291,8 +303,6 @@ public class SolitaireGame {
             }
             System.out.println();
         }
-    }
-    
-    
+    } 
     
 }

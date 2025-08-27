@@ -8,87 +8,72 @@ import com.solitaire.model.Rank;
 import com.solitaire.model.Suit;
 
 public class readFile {
+	private static int deckSize = 52;
+    public static List<Card> readDeckFromFile(String filename) throws IOException {
+        List<Card> deck = loadDeck(filename);
+        validateDeck(deck);
+        return deck;
+    }
 
-    public static List<Card> readDeckFromFile(String filename) {
-        Scanner input = new Scanner(System.in);
+    private static List<Card> loadDeck(String filename) throws IOException {
         List<Card> deck = new ArrayList<>();
-        boolean fileLoaded = false;
+        List<String> invalidCards = new ArrayList<>();
 
-        while (!fileLoaded) {
-            List<String> invalidCards = new ArrayList<>();
+        try (Scanner fileScanner = new Scanner(new File(filename))) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine().trim();
+                if (line.isEmpty()) continue;
 
-            try (Scanner fileScanner = new Scanner(new File(filename))) {
-                deck.clear();
-
-                
-                while (fileScanner.hasNextLine()) {
-                    String line = fileScanner.nextLine().trim();
-                    if (line.isEmpty()) continue; 
-
-                    StringTokenizer cardTokenizer = new StringTokenizer(line, ",");
-
-                   
-                    while (cardTokenizer.hasMoreTokens()) {
-                        String cardStr = cardTokenizer.nextToken().trim();
-                        StringTokenizer parts = new StringTokenizer(cardStr, "-");
-
-                        if (parts.countTokens() == 2) {
-                            String suitStr = parts.nextToken().trim().toUpperCase();
-                            String rankStr = parts.nextToken().trim().toUpperCase();
-
-                            try {
-                                Suit suit = Suit.fromString(suitStr);
-                                Rank rank = Rank.fromString(rankStr);
-                                deck.add(new Card(suit, rank));
-                            } catch (IllegalArgumentException e) {
-                                invalidCards.add(cardStr);
-                            }
-                        } else {
-                            invalidCards.add(cardStr);
-                        }
-                    }
+                for (String cardStr : line.split(",")) {
+                    parseCard(cardStr.trim(), deck, invalidCards);
                 }
-
-                
-                if (!invalidCards.isEmpty()) {
-                    System.out.println("Invalid cards found: " + invalidCards);
-                    filename = promptFilePath(input);
-                    continue;
-                }
-
-               
-                Set<Card> seen = new HashSet<>();
-                List<Card> duplicates = new ArrayList<>();
-                for (Card card : deck) {
-                    if (!seen.add(card)) {
-                        duplicates.add(card);
-                    }
-                }
-
-                if (!duplicates.isEmpty() || deck.size() != 52) {
-                    System.out.println("Invalid file: must contain exactly 52 unique cards.");
-                    if (!duplicates.isEmpty()) {
-                    	duplicates.forEach(card  -> card.setFaceUp(true));
-                        System.out.println("   Duplicates: " + duplicates);
-                    }
-                    filename = promptFilePath(input);
-                    continue;
-                }
-
-                fileLoaded = true;
-
-            } catch (IOException e) {
-                System.out.println("File not found or cannot be read.");
-                filename = promptFilePath(input);
             }
+        }
+
+        if (!invalidCards.isEmpty()) {
+            throw new IllegalArgumentException("Invalid cards found: " + invalidCards);
         }
 
         return deck;
     }
 
-    private static String promptFilePath(Scanner input) {
-        System.out.print("Input File path: ");
-        return input.nextLine();
+    private static void parseCard(String cardStr, List<Card> deck, List<String> invalidCards) {
+        String[] parts = cardStr.split("-");
+        if (parts.length != 2) {
+            invalidCards.add(cardStr);
+            return;
+        }
+
+        String suitStr = parts[0].trim().toUpperCase();
+        String rankStr = parts[1].trim().toUpperCase();
+
+        try {
+            Suit suit = Suit.fromString(suitStr);
+            Rank rank = Rank.fromString(rankStr);
+            deck.add(new Card(suit, rank));
+        } catch (IllegalArgumentException e) {
+            invalidCards.add(cardStr);
+        }
+    }
+
+    private static void validateDeck(List<Card> deck) {
+        Set<Card> seen = new HashSet<>();
+        List<Card> duplicates = new ArrayList<>();
+
+        for (Card card : deck) {
+            if (!seen.add(card)) {
+                duplicates.add(card);
+            }
+        }
+
+        if (!duplicates.isEmpty() || deck.size() != deckSize) {
+            if (!duplicates.isEmpty()) {
+                duplicates.forEach(card -> card.setFaceUp(true));
+                throw new IllegalArgumentException(
+                    "Invalid file: must contain 52 unique cards. Duplicates: " + duplicates
+                );
+            }
+            throw new IllegalArgumentException("Invalid file: must contain exactly 52 unique cards.");
+        }
     }
 }
-

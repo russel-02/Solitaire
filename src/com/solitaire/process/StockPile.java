@@ -10,7 +10,7 @@ public class StockPile extends Pile {
     public StockPile(List<Card> cards) {
         if (cards != null) {
             this.cards.addAll(cards);
-            // stock starts face down
+            
             for (Card c : this.cards) {
                 c.setFaceUp(false);
             }

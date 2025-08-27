@@ -7,7 +7,6 @@ import java.util.*;
 
 public class Dealer {
 
-
     public void displayDeck(List<Card> deck) {
         for (Card card : deck) {
         	card.setFaceUp(true);
@@ -15,8 +14,7 @@ public class Dealer {
         }
         System.out.println();
     }
-    
-
+ 
  
     public void shuffleDeck(List<Card> deck) {
         List<Card> firstHalf = new ArrayList<>(deck.subList(0, deck.size() / 2));
