@@ -11,8 +11,8 @@ public class StockPile extends Pile {
         if (cards != null) {
             this.cards.addAll(cards);
             
-            for (Card c : this.cards) {
-                c.setFaceUp(false);
+            for (Card cardStock : this.cards) {
+            	cardStock.setFaceUp(false);
             }
         }
     }
@@ -29,14 +29,14 @@ public class StockPile extends Pile {
     public List<Card> drawCards(int n) {
         List<Card> drawn = new ArrayList<>();
         for (int i = 0; i < n && !cards.isEmpty(); i++) {
-            Card c = cards.remove(cards.size() - 1);
-            c.setFaceUp(true);
-            drawn.add(c);
+            Card cardStock = cards.remove(cards.size() - 1);
+            cardStock.setFaceUp(true);
+            drawn.add(cardStock);
         }
         return drawn;
     }
 
-    /** Alias so either draw(3) or drawCards(3) works. */
+    
     public List<Card> draw(int count) {
         return drawCards(count);
     }
@@ -55,8 +55,8 @@ public class StockPile extends Pile {
         waste.clear();
 
         // All cards should be face down again
-        for (Card c : this.cards) {
-            c.setFaceUp(false);
+        for (Card cardStock : this.cards) {
+        	cardStock.setFaceUp(false);
         }
     }
 

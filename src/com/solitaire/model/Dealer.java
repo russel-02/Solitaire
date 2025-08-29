@@ -3,8 +3,6 @@ package com.solitaire.model;
 import java.util.*;
 
 
-
-
 public class Dealer {
 
     public void displayDeck(List<Card> deck) {

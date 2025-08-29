@@ -92,8 +92,6 @@ public class SolitaireGame {
 		do {
 			progressMade = false;
 			
-			
-
 			if (isGameWon()) {
 				System.out.println("\n=== YOU WON! All 52 cards are in the foundations. ===");
 				return;

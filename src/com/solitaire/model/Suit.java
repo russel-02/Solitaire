@@ -1,7 +1,6 @@
 package com.solitaire.model;
 
 
-
 public enum Suit {
     DIAMOND("D", 4),
     HEART("H", 3),

@@ -13,13 +13,14 @@ public class Main {
 	public static int DrawnCardsInput;
 	private static List<Card> deck;
 	private static boolean unreadable = true;
+	private static boolean validInput = true;
 
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
 
 		System.out.println("Welcome to Solitaire");
 
-		while (true) {
+		while (validInput) {
 			System.out.print("Choose between (1) Random shuffle or (2) Faro Shuffle: ");
 			if (input.hasNextInt()) {
 				shuffleType = input.nextInt();
@@ -34,7 +35,7 @@ public class Main {
 			}
 		}
 
-		while (true) {
+		while (validInput) {
 			System.out.print("Enter number of shuffles: ");
 			if (input.hasNextInt()) {
 				shuffleCount = input.nextInt();
@@ -49,7 +50,7 @@ public class Main {
 			}
 		}
 		
-		while (true) {
+		while (validInput) {
 			System.out.print("Choose between (1) or (3) Number of Drawn Cards from Stock Pile: ");
 			if (input.hasNextInt()) {
 				DrawnCardsInput = input.nextInt();

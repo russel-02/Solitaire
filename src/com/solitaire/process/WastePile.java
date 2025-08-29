@@ -12,9 +12,9 @@ public class WastePile extends Pile {
     }
 
     public void addCards(List<Card> cards) {
-        for (Card c : cards) {
-            c.setFaceUp(true);   // ensure all cards are face up
-            this.cards.add(c);
+        for (Card wasteCardFace : cards) {
+        	wasteCardFace.setFaceUp(true);   // ensure all cards are face up
+            this.cards.add(wasteCardFace);
         }
     }
 
