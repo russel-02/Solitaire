@@ -35,9 +35,9 @@ public enum Rank {
     }
     
     public static Rank fromString(String str) {
-        for (Rank r : values()) {
-            if (r.symbol.equals(str)) {
-                return r;
+        for (Rank rank : values()) {
+            if (rank.symbol.equals(str)) {
+                return rank;
             }
         }
         throw new IllegalArgumentException("Invalid rank: " + str);

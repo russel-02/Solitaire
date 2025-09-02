@@ -2,7 +2,6 @@ package com.solitaire.process;
 
 import com.solitaire.model.Card;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class StockPile extends Pile {
@@ -22,14 +21,10 @@ public class StockPile extends Pile {
         return false; // no direct adding to stock
     }
 
-    /**
-     * Draw up to 'n' cards from stock (top = last element).
-     * All cards are flipped face-up before being returned.
-     */
     public List<Card> drawCards(int n) {
         List<Card> drawn = new ArrayList<>();
         for (int i = 0; i < n && !cards.isEmpty(); i++) {
-            Card cardStock = cards.remove(cards.size() - 1);
+            Card cardStock = cards.remove(0);
             cardStock.setFaceUp(true);
             drawn.add(cardStock);
         }
@@ -46,11 +41,7 @@ public class StockPile extends Pile {
      */
     public void recycleFromWaste(WastePile waste) {
         if (waste.isEmpty()) return;
-
-        // Reverse order of waste → so the first drawn card goes back on top
         List<Card> wasteCards = new ArrayList<>(waste.getCards());
-        Collections.reverse(wasteCards);
-
         this.cards.addAll(wasteCards); // back into stock
         waste.clear();
 

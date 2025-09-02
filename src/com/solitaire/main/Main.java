@@ -1,6 +1,5 @@
 package com.solitaire.main;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import com.solitaire.model.Card;
@@ -13,29 +12,14 @@ public class Main {
 	public static int DrawnCardsInput;
 	private static List<Card> deck;
 	private static boolean unreadable = true;
-	private static boolean validInput = true;
+	private static boolean invalidInput = true;
 
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
 
 		System.out.println("Welcome to Solitaire");
-
-		while (validInput) {
-			System.out.print("Choose between (1) Random shuffle or (2) Faro Shuffle: ");
-			if (input.hasNextInt()) {
-				shuffleType = input.nextInt();
-				if (shuffleType == 1 || shuffleType == 2) {
-					break;
-				} else {
-					System.out.println("Please enter a number between 1 or 2.");
-				}
-			} else {
-				System.out.println("Invalid input. Please enter a number.");
-				input.next();
-			}
-		}
-
-		while (validInput) {
+		
+		while (invalidInput) {
 			System.out.print("Enter number of shuffles: ");
 			if (input.hasNextInt()) {
 				shuffleCount = input.nextInt();
@@ -50,7 +34,7 @@ public class Main {
 			}
 		}
 		
-		while (validInput) {
+		while (invalidInput) {
 			System.out.print("Choose between (1) or (3) Number of Drawn Cards from Stock Pile: ");
 			if (input.hasNextInt()) {
 				DrawnCardsInput = input.nextInt();
@@ -64,6 +48,27 @@ public class Main {
 				input.next();
 			}
 		}
+		
+		if(shuffleCount == 0) {
+			invalidInput = false;
+		}
+		
+		while (invalidInput) {
+			System.out.print("Choose between (1) Random shuffle or (2) Faro Shuffle: ");
+			if (input.hasNextInt()) {
+				shuffleType = input.nextInt();
+				if (shuffleType == 1 || shuffleType == 2) {
+					break;
+				} else {
+					System.out.println("Please enter a number between 1 or 2.");
+				}
+			} else {
+				System.out.println("Invalid input. Please enter a number.");
+				input.next();
+			}
+		}
+
+
 		input.nextLine();
 
 		while (unreadable) {
@@ -78,7 +83,7 @@ public class Main {
 		}
 
 		input.close();
-		Collections.reverse(deck);
+		
 		SolitaireGame game = new SolitaireGame(deck, shuffleCount, shuffleType, DrawnCardsInput);
 		game.playGame();
 
