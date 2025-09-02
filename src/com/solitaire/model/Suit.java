@@ -1,7 +1,6 @@
 package com.solitaire.model;
 
 
-
 public enum Suit {
     DIAMOND("D", 4),
     HEART("H", 3),
@@ -20,9 +19,9 @@ public enum Suit {
     public int getValue() { return value; }
     
     public static Suit fromString(String str) {
-        for (Suit s : values()) {
-            if (s.symbol.equalsIgnoreCase(str)) {
-                return s;
+        for (Suit suit : values()) {
+            if (suit.symbol.equalsIgnoreCase(str)) {
+                return suit;
             }
         }
         throw new IllegalArgumentException("Invalid suit: " + str);
