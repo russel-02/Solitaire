@@ -44,7 +44,6 @@ public class SolitaireGame {
 
 		deck.forEach(cardFace -> cardFace.setFaceUp(false));
 
-		// deal tableau (7 piles, 1 to 7 cards each)
 		tableau = new ArrayList<>();
 		int index = 0;
 		for (int pileSize = 1; pileSize <= 7; pileSize++) {
@@ -55,7 +54,6 @@ public class SolitaireGame {
 			tableau.add(new TableauPile(pileCards));
 		}
 
-		// remaining deck goes into stock
 		List<Card> stockCards = new ArrayList<>(deck.subList(index, deck.size()));
 		stock = new StockPile(stockCards);
 		waste = new WastePile();
@@ -88,8 +86,6 @@ public class SolitaireGame {
 	}
 
 	// ================= Main Game Loop =================
-	
-	
 	public void playGame() {
 		printGameState();
 		
@@ -118,6 +114,7 @@ public class SolitaireGame {
 				continue;
 			}
 			if (tryTableauToTableau()) {
+				resetTracking();
 				progressMade = true;
 				continue;
 			}
@@ -143,12 +140,9 @@ public class SolitaireGame {
 				foundationPile.addCard(waste.removeTopCard());
 				System.out.println("Moved " + top + " from Waste -> Foundation");
 				printGameState();
-				
 				return true;
 			}
 		}
-		
-		
 		return false;
 	}
 
@@ -157,7 +151,6 @@ public class SolitaireGame {
 		if (top == null) 
 			return false;
 		
-
 		for (TableauPile tableauPile : tableau) {
 			if (tableauPile.canAddCard(top)) {
 				tableauPile.addCard(waste.removeTopCard());
@@ -166,7 +159,6 @@ public class SolitaireGame {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 
@@ -175,12 +167,12 @@ public class SolitaireGame {
 			Card top = tableauPile.peekTopCard();
 			if (top == null)
 				continue;
-
+			
 			for (FoundationPile fondationPile : foundations) {
 				if (fondationPile.canAddCard(top)) {
 					fondationPile.addCard(tableauPile.removeTopCard());
 					System.out.println("Moved " + top + " from Tableau -> Foundation");
-
+					
 					if (!tableauPile.isEmpty() && !tableauPile.peekTopCard().isFaceUp()) {
 						tableauPile.peekTopCard().setFaceUp(true);
 					}
@@ -208,7 +200,6 @@ public class SolitaireGame {
 		}
 
 		if (!waste.isEmpty()) {
-			
 		    stock.recycleFromWaste(waste);
 		    System.out.println("Recycled Waste -> Stock");
 
@@ -217,7 +208,6 @@ public class SolitaireGame {
 		    	printGameState();
 		        return false;
 		    }
-
 		    printGameState();
 		    return true;
 		}
@@ -242,7 +232,6 @@ public class SolitaireGame {
 	        for (int cardIndex = 0; cardIndex < sourceCards.size(); cardIndex++) {
 	            Card candidate = sourceCards.get(cardIndex);
 
-	            // Only consider face-up cards
 	            if (!candidate.isFaceUp())
 	                continue;
 
@@ -267,32 +256,26 @@ public class SolitaireGame {
 	            List<Card> sequence = new ArrayList<>(sourceCards.subList(cardIndex, sourceCards.size()));
 	            String sequenceSignature = sequenceSignature(sequence);
 
-	            // Try to move this sequence onto another tableau pile
 	            for (int targetIndex = 0; targetIndex < tableau.size(); targetIndex++) {
 	                if (sourceIndex == targetIndex)
 	                    continue; // Can't move onto itself
 
 	                TableauPile targetPile = tableau.get(targetIndex);
 
-	                // Check if the target pile rules allow placing the candidate
 	                if (!targetPile.canAddCard(candidate))
 	                    continue;
 
-	                // Construct a unique move identifier
 	                String moveKey = sourceIndex + "->" + targetIndex + ":" + sequenceSignature;
 
-	                // Avoid repeating the same move
 	                if (visitedMoves.contains(moveKey))
 	                    continue;
 
-	                // Avoid immediate reversals or redundant repeats
 	                if (isReverseOrRepeat(sourceIndex, targetIndex, sequenceSignature))
 	                    continue;
 
 	                if (targetPile.isEmpty() && candidate.getRank() == Rank.KING && !revealsNew)
 	                    continue;
 
-	                // Execute the move: remove sequence from source and add to target
 	                List<Card> movingSequence = sourcePile.extractSequenceFrom(candidate);
 	                targetPile.addSequence(movingSequence);
 
@@ -302,12 +285,10 @@ public class SolitaireGame {
 	                    " -> Tableau " + (targetIndex + 1)
 	                );
 
-	                // Flip the next card in the source pile if it was hidden
 	                if (!sourcePile.isEmpty() && !sourcePile.peekTopCard().isFaceUp()) {
 	                    sourcePile.peekTopCard().setFaceUp(true);
 	                }
 
-	                // Track this move to avoid cycles
 	                updateMoveTracking(sourceIndex, targetIndex, sequenceSignature, moveKey);
 
 	                printGameState();
@@ -318,7 +299,6 @@ public class SolitaireGame {
 	    }
 	    return false;
 	}
-
 
 	private boolean isReverseOrRepeat(int sourceIndex, int targetIndex, String sequenceSignature) {
 		return (lastTableauFrom == targetIndex && lastTableauTo == sourceIndex && sequenceSignature.equals(lastTableauSeqSig))
@@ -352,26 +332,25 @@ public class SolitaireGame {
 	//Represents entire game state to detect repeated states to avoid looping
 	private String gameStateSignature() {
 	    StringBuilder sb = new StringBuilder();
-	    // Foundations (only top is needed, since they never shrink)
+
 	    for (FoundationPile foundationPile : foundations) {
 	        Card top = foundationPile.peekTopCard();
 	        sb.append(top == null ? "[]" : top.toString()).append("|");
 	    }
-	    // Tableau
+
 	    for (TableauPile tableauPile : tableau) {
 	        for (Card card : tableauPile.getCards()) {
 	            sb.append(card.isFaceUp() ? card.toString() : "XX").append(",");
 	        }
 	        sb.append("|");
 	    }
-	    // Waste (full order)
+	    
 	    sb.append("W:[");
 	    for (Card card : waste.getCards()) {
 	        sb.append(card.toString()).append(",");
 	    }
 	    sb.append("]");
 
-	    // Stock (full order)
 	    sb.append("S:[");
 	    for (Card card : stock.getCards()) {
 	        sb.append(card.toString()).append(",");

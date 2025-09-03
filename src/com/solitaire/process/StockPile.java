@@ -31,10 +31,6 @@ public class StockPile extends Pile {
         return drawn;
     }
 
-    
-    public List<Card> draw(int count) {
-        return drawCards(count);
-    }
 
     /**
      * Recycle waste back into stock (flip all cards face down again).
@@ -49,12 +45,6 @@ public class StockPile extends Pile {
         for (Card cardStock : this.cards) {
         	cardStock.setFaceUp(false);
         }
-    }
-
-
-    /** Convenience method for debugging/UI */
-    public Card peekTop() {
-        return cards.isEmpty() ? null : cards.get(cards.size() - 1);
     }
 
     @Override

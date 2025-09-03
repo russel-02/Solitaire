@@ -60,10 +60,6 @@ public class TableauPile extends Pile {
         cards.addAll(sequence);
     }
 
-    public Card peekTopCard() {
-        return cards.isEmpty() ? null : cards.get(cards.size() - 1);
-    }
-
     /**
      * Utility: flip the last card face-up if pile not empty.
      */
@@ -71,27 +67,6 @@ public class TableauPile extends Pile {
         if (!cards.isEmpty()) {
             cards.get(cards.size() - 1).setFaceUp(true);
         }
-    }
-    
-    public int size() {
-        return cards.size();
-    }
-
-    /**
-     * Rule: Prevent unnecessary tableau-to-tableau moves.
-     * Only allow if:
-     *  1. It exposes a new face-down card in the source pile, OR
-     *  2. The destination pile was empty and this is the only valid King placement.
-     */
-    public boolean isNecessaryMove(List<Card> sequence, TableauPile source) {
-        // Case 1: Exposes a new card in source
-        boolean exposesCard = source.size() > sequence.size() &&
-                              !source.peekTopCard().isFaceUp();
-        
-        // Case 2: Empty tableau and placing King
-        boolean kingToEmpty = this.isEmpty() && sequence.get(0).getRank() == Rank.KING;
-        
-        return exposesCard || kingToEmpty;
     }
 
     @Override
