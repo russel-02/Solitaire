@@ -97,7 +97,6 @@ public class SolitaireGame {
 				return;
 			}
 					
-
 			if (tryWasteToFoundation()) {
 				resetTracking();
 				progressMade = true;
@@ -114,7 +113,6 @@ public class SolitaireGame {
 				continue;
 			}
 			if (tryTableauToTableau()) {
-				resetTracking();
 				progressMade = true;
 				continue;
 			}

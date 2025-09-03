@@ -8,14 +8,14 @@ public class TableauPile extends Pile {
     public TableauPile(List<Card> cards) {
         this.cards.addAll(cards);
         if (!this.cards.isEmpty()) {
-            this.cards.get(this.cards.size() - 1).setFaceUp(true); // last card face up
+            this.cards.get(this.cards.size() - 1).setFaceUp(true); 
         }
     }
 
     @Override
     public boolean canAddCard(Card card) {
         if (isEmpty()) {
-            return card.getRank() == Rank.KING; // only King can start empty pile
+            return card.getRank() == Rank.KING; 
         }
         Card top = peekTopCard();
         return top != null &&
@@ -35,34 +35,24 @@ public class TableauPile extends Pile {
         List<Card> sequence = new ArrayList<>(cards.subList(index, cards.size()));
         cards.subList(index, cards.size()).clear(); // remove from tableau
 
-        // flip new last card if any remain
         flipLastFaceUp();
 
         return sequence;
     }
     
-    /**
-     * Remove and return the top card.
-     */
     @Override
     public Card removeTopCard() {
         if (cards.isEmpty()) return null;
         Card removed = cards.remove(cards.size() - 1);
-        flipLastFaceUp(); // reveal next card if any
+        flipLastFaceUp(); 
         return removed;
     }
 
-    /**
-     * Add a sequence of cards to this tableau pile.
-     */
     public void addSequence(List<Card> sequence) {
         if (sequence == null || sequence.isEmpty()) return;
         cards.addAll(sequence);
     }
 
-    /**
-     * Utility: flip the last card face-up if pile not empty.
-     */
     private void flipLastFaceUp() {
         if (!cards.isEmpty()) {
             cards.get(cards.size() - 1).setFaceUp(true);

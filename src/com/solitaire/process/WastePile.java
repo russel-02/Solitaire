@@ -7,13 +7,13 @@ public class WastePile extends Pile {
 
     @Override
     public boolean canAddCard(Card card) {
-        // waste can always accept drawn cards
+       
         return true;
     }
 
     public void addCards(List<Card> cards) {
         for (Card wasteCardFace : cards) {
-        	wasteCardFace.setFaceUp(true);   // ensure all cards are face up
+        	wasteCardFace.setFaceUp(true);
             this.cards.add(wasteCardFace);
         }
     }
