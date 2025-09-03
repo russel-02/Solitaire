@@ -31,17 +31,12 @@ public class StockPile extends Pile {
         return drawn;
     }
 
-
-    /**
-     * Recycle waste back into stock (flip all cards face down again).
-     */
     public void recycleFromWaste(WastePile waste) {
         if (waste.isEmpty()) return;
         List<Card> wasteCards = new ArrayList<>(waste.getCards());
-        this.cards.addAll(wasteCards); // back into stock
+        this.cards.addAll(wasteCards); 
         waste.clear();
-
-        // All cards should be face down again
+        
         for (Card cardStock : this.cards) {
         	cardStock.setFaceUp(false);
         }

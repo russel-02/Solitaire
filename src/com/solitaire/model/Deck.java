@@ -26,12 +26,10 @@ public class Deck {
         return cards.size();
     }
 
-    // ✅ Getter (copy)
     public List<Card> getCards() {
         return new ArrayList<>(cards);
     }
 
-    // ✅ Setter (replace deck order)
     public void setCards(List<Card> newOrder) {
         cards.clear();
         cards.addAll(newOrder);
